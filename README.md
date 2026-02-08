@@ -79,11 +79,3 @@ Example — override any `key.subkey=value` from the command line.
 | `standard` | MSE noise prediction                       | Baseline                |
 | `eu`       | MSE − λ_EU · pairwise_L1(M samples)       | Epistemic uncertainty   |
 | `au`       | MSE with noise-augmented conditioning      | Aleatoric uncertainty   |
-
-## Key Design Decisions
-
-- **`torch.func.functional_call`** injects HyperNet-generated weights into the frozen backbone without mutation
-- **Config-driven**: all hyperparameters in YAML, no hard-coded magic numbers
-- **Modular datasets**: `build_dataset()` factory dispatches by config name
-- **Modular backbones**: `build_backbone()` factory with 5 registered architectures
-- **Separation of concerns**: trainers, inference, and data are fully decoupled
