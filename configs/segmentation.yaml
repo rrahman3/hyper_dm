@@ -1,0 +1,34 @@
+# ──────────────────────────────────────────────────────────────────
+# Downstream  ·  Lung nodule segmentation on Hyper-DM reconstructions
+# ──────────────────────────────────────────────────────────────────
+task: segmentation
+
+data:
+  dataset: nodule_seg                   # nodule_seg | nodule_seg_uncertainty
+  ct_dir: D:/data/LUNA16/recons_EU_2/mean
+  mask_dir: D:/data/LUNA16/dataset/seg_preprocessed/ct/
+  # For uncertainty-aware variant (3-channel input):
+  au_dir: D:/data/LUNA16/recons_EU_2/au
+  eu_dir: D:/data/LUNA16/recons_EU_2/eu
+  img_size: 128
+  train_frac: 0.5
+  val_frac: 0.3                         # of remaining
+  use_uncertainty_channels: false       # true → 3ch (mean+AU+EU)
+
+model:
+  architecture: seg_unet                # seg_unet
+  in_ch: 1                              # 1 for standard, 3 for uncertainty
+  n_classes: 1
+
+training:
+  epochs: 50
+  batch_size: 16
+  lr: 3.0e-4
+  loss: seg_combined                    # 0.5×BCE + 0.5×Dice
+
+inference:
+  checkpoint: unet_luna16_pretrained_on_ct.pth
+
+checkpoint:
+  dir: ./checkpoints/segmentation
+  save_every: 10

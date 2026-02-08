@@ -1,0 +1,32 @@
+# ──────────────────────────────────────────────────────────────────
+# Downstream · LUNA16 nodule segmentation — Standard reconstructions
+# ──────────────────────────────────────────────────────────────────
+task: segmentation
+
+data:
+  dataset: nodule_seg
+  ct_dir: D:/data/LUNA16/recons_standard/mean       # standard Hyper-DM recons
+  mask_dir: D:/data/LUNA16/dataset/seg_preprocessed/ct/
+  img_size: 128
+  train_frac: 0.5
+  val_frac: 0.3
+  use_uncertainty_channels: false
+
+model:
+  architecture: seg_unet
+  in_ch: 1                              # single-channel (mean only)
+  n_classes: 1
+
+training:
+  epochs: 50
+  batch_size: 16
+  lr: 3.0e-4
+  loss: seg_combined
+
+checkpoint:
+  dir: ./checkpoints/seg_luna16_standard
+  save_every: 10
+
+tracking:
+  enabled: false
+  experiment_name: seg-luna16-standard

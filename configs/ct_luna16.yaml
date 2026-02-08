@@ -1,0 +1,63 @@
+# ──────────────────────────────────────────────────────────────────
+# Hyper-DM  ·  Sparse-view CT reconstruction (LUNA16)
+# ──────────────────────────────────────────────────────────────────
+task: ct_reconstruction
+
+data:
+  dataset: ct_luna16
+  root: D:/data/LUNA16/dataset          # must contain ct/ and sino/
+  img_size: 128
+  split_seed: 0
+  train_frac: 0.8
+  val_frac: 0.1                         # test = 1 - train - val
+
+model:
+  backbone: unet_tiny                   # unet_tiny | hyper_unet
+  in_ch: 3                              # [xt, sino, t_map]
+  base_ch: 32
+  use_se: false                         # SE-blocks (only for hyper_unet)
+
+hypernet:
+  z_dim: 8
+  hidden: 64
+
+diffusion:
+  T: 200
+  beta_min: 1.0e-4
+  beta_max: 1.0e-2
+
+training:
+  mode: standard                        # standard | eu | au
+  epochs: 50
+  batch_size: 8
+  lr: 3.0e-4
+  amp: true
+  ddim_steps: 20                        # sampling steps during val
+  # EU-specific
+  m_weights: 2                          # weight samples for EU spread
+  lambda_eu: 0.25
+  # AU-specific
+  n_noisy: 2
+  sigma_noise: 0.04
+  lambda_au: 1.0
+
+inference:
+  M: 10                                 # weight samples  (epistemic)
+  N: 10                                 # DDIM draws      (aleatoric)
+  ddim_steps: 20
+  output_dir: D:/data/LUNA16/hyper_dm_out
+  n_sample_images: 5                    # how many PNGs to log to MLflow
+
+checkpoint:
+  dir: D:/data/LUNA16/checkpoints
+  save_every: 5                         # save every N epochs
+
+# ── MLOps tracking (set enabled: true to use MLflow) ──
+tracking:
+  enabled: false                        # flip to true when you have mlflow
+  experiment_name: hyper-dm-luna16
+  tracking_uri: mlruns                  # local dir, or an MLflow server URL
+  run_name: null                        # auto-generated if null
+  tags:
+    project: hyper-dm
+    dataset: luna16

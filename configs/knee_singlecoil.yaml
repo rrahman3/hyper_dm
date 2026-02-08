@@ -1,0 +1,51 @@
+# ──────────────────────────────────────────────────────────────────
+# Hyper-DM  ·  fastMRI knee single-coil reconstruction
+# ──────────────────────────────────────────────────────────────────
+task: mri_reconstruction
+
+data:
+  dataset: fastmri_knee
+  root: D:/data/fastMRI/knee_singlecoil/knee_singlecoil_train/singlecoil_train
+  img_size: 128
+  split_seed: 0
+  train_frac: 0.1                       # use 10% of files for training
+  val_frac: 0.1
+  mask:
+    type: random
+    center_fractions: [0.08]
+    accelerations: [4]
+
+model:
+  backbone: unet_tiny
+  in_ch: 3
+  base_ch: 32
+  use_se: false
+
+hypernet:
+  z_dim: 8
+  hidden: 64
+
+diffusion:
+  T: 50
+  beta_min: 1.0e-4
+  beta_max: 1.0e-2
+
+training:
+  mode: standard                        # standard | eu
+  epochs: 100
+  batch_size: 16
+  lr: 3.0e-4
+  amp: true
+  ddim_steps: 20
+  m_weights: 2
+  lambda_eu: 0.25
+
+inference:
+  M: 4
+  N: 4
+  ddim_steps: 20
+  output_dir: D:/data/fastMRI/hyper_dm_out
+
+checkpoint:
+  dir: D:/data/fastMRI/checkpoints
+  save_every: 5

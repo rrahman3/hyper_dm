@@ -1,0 +1,55 @@
+# ──────────────────────────────────────────────────────────────────
+# hyper_dm — .gitignore
+# ──────────────────────────────────────────────────────────────────
+
+# ── Python ────────────────────────────────────────────────────────
+__pycache__/
+*.py[cod]
+*$py.class
+*.egg-info/
+*.egg
+dist/
+build/
+*.so
+
+# ── Virtual environments ──────────────────────────────────────────
+.venv/
+venv/
+env/
+.conda/
+
+# ── IDE / editor ──────────────────────────────────────────────────
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+.DS_Store
+Thumbs.db
+
+# ── Jupyter notebooks (checkpoints) ──────────────────────────────
+.ipynb_checkpoints/
+
+# ── Slurm logs (keep dir, ignore contents) ───────────────────────
+logs/*.out
+logs/*.err
+
+# ── MLflow local tracking ────────────────────────────────────────
+mlruns/
+mlartifacts/
+
+# ── Model checkpoints & outputs (large binaries) ─────────────────
+checkpoints/
+*.pth
+*.ckpt
+*.pt
+
+# ── Data / reconstruction outputs ─────────────────────────────────
+*.npy
+*.h5
+*.hdf5
+
+# ── Misc ──────────────────────────────────────────────────────────
+*.log
+*.csv
+!configs/*.yaml

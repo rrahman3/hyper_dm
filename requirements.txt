@@ -1,0 +1,21 @@
+# Core
+torch>=2.1.0
+numpy>=1.24.0
+pyyaml>=6.0
+
+# MRI processing
+h5py>=3.9.0
+fastmri>=0.3.0
+
+# Metrics
+scikit-image>=0.21.0
+
+# Utilities
+tqdm>=4.65.0
+pandas>=2.0.0
+
+# Testing
+pytest>=7.4.0
+
+# MLOps (optional)
+# pip install mlflow>=2.9.0

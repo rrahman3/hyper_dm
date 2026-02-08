@@ -1,0 +1,56 @@
+# ──────────────────────────────────────────────────────────────────
+# Hyper-DM  ·  fastMRI brain multi-coil reconstruction
+# ──────────────────────────────────────────────────────────────────
+task: mri_reconstruction
+
+data:
+  dataset: fastmri_brain
+  root: D:/data
+  split: train
+  modality: brain/
+  img_size: 320
+  split_seed: 0
+  train_frac: 0.8
+  val_frac: 0.1
+  mask:
+    type: equispaced
+    center_fractions: [0.08]
+    accelerations: [4]
+
+model:
+  backbone: unet_tiny_3level            # 3-level variant for brain
+  in_ch: 3
+  base_ch: 32
+  use_se: false
+
+hypernet:
+  z_dim: 8
+  hidden: 64
+
+diffusion:
+  T: 100
+  beta_min: 1.0e-4
+  beta_max: 2.0e-2
+
+training:
+  mode: eu                              # standard | eu | au
+  epochs: 10
+  batch_size: 1
+  lr: 3.0e-4
+  amp: true
+  ddim_steps: 20
+  m_weights: 3
+  lambda_eu: 0.25
+  n_noisy: 3
+  sigma_noise: 0.04
+  lambda_au: 1.0
+
+inference:
+  M: 4
+  N: 4
+  ddim_steps: 20
+  output_dir: D:/data/fastMRI/brain_hyper_dm_out
+
+checkpoint:
+  dir: D:/data/fastMRI/brain_checkpoints
+  save_every: 1

@@ -1,0 +1,33 @@
+# ──────────────────────────────────────────────────────────────────
+# Downstream  ·  Binary classification on Hyper-DM reconstructions
+# ──────────────────────────────────────────────────────────────────
+task: downstream_classification
+
+data:
+  dataset: recon_downstream
+  recon_dir: D:/data/LUNA16/recons
+  label_dir: D:/data/LUNA16/dataset/labels
+  data_root: D:/data/LUNA16/dataset     # for sino export
+  img_size: 128
+  train_frac: 0.8
+  val_frac: 0.1
+
+# Hyper-DM checkpoint for reconstruction export
+reconstruction:
+  hnet_ckpt: D:/data/CT/luna16/models/hnet_modified_EU__49.ckpt
+  backbone: unet_tiny
+  z_dim: 8
+  hidden: 64
+  ddim_steps: 20
+
+model:
+  architecture: tiny_cnn
+
+training:
+  epochs: 10
+  batch_size: 4
+  lr: 1.0e-3
+
+checkpoint:
+  dir: ./checkpoints/downstream
+  save_every: 5

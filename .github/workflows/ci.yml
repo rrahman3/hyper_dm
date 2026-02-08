@@ -1,0 +1,67 @@
+name: CI — Tests & Lint
+
+on:
+  push:
+    branches: [main, dev]
+    paths:
+      - "hyper_dm/**"
+      - "tests/**"
+      - "pyproject.toml"
+      - "requirements.txt"
+  pull_request:
+    branches: [main]
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        python-version: ["3.10", "3.11"]
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Python ${{ matrix.python-version }}
+        uses: actions/setup-python@v5
+        with:
+          python-version: ${{ matrix.python-version }}
+
+      - name: Cache pip
+        uses: actions/cache@v4
+        with:
+          path: ~/.cache/pip
+          key: ${{ runner.os }}-pip-${{ hashFiles('requirements.txt', 'pyproject.toml') }}
+          restore-keys: |
+            ${{ runner.os }}-pip-
+
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -e ".[dev]"
+
+      - name: Lint with ruff
+        run: ruff check hyper_dm/ tests/
+
+      - name: Run tests
+        run: pytest --tb=short -q
+        env:
+          PYTHONPATH: .
+
+  typecheck:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Install deps
+        run: |
+          pip install --upgrade pip
+          pip install -e ".[dev]"
+          pip install pyright
+
+      - name: Type check
+        run: pyright hyper_dm/
+        continue-on-error: true   # advisory for now

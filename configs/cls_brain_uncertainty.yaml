@@ -1,0 +1,35 @@
+# ──────────────────────────────────────────────────────────────────
+# Downstream · fastMRI Brain classification — Uncertainty-aware (3-ch)
+# Uses mean + AU + EU maps stacked as 3 input channels.
+# ──────────────────────────────────────────────────────────────────
+task: downstream_classification
+
+data:
+  dataset: mri_cls
+  recon_dir: D:/data/fastMRI/brain_recons_AU/mean    # mean channel
+  au_dir: D:/data/fastMRI/brain_recons_AU/au
+  eu_dir: D:/data/fastMRI/brain_recons_AU/eu
+  csv_path: D:/data/fastMRI/brain_indexed.csv        # provide when available
+  img_size: 320
+  train_frac: 0.8
+  val_frac: 0.1
+  split_seed: 0
+  use_uncertainty_channels: true
+
+model:
+  architecture: tiny_cnn
+  in_ch: 3                              # mean + AU + EU
+  num_classes: 22                       # update after inspecting brain CSV
+
+training:
+  epochs: 30
+  batch_size: 16
+  lr: 1.0e-3
+
+checkpoint:
+  dir: ./checkpoints/cls_brain_uncertainty
+  save_every: 10
+
+tracking:
+  enabled: false
+  experiment_name: cls-brain-uncertainty
